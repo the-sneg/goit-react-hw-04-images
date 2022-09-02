@@ -1,47 +1,40 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Notiflix from 'notiflix';
 import s from './Searchbar.module.css';
 
-export class Searchbar extends Component {
-  state = {
-    value: '',
-  };
+export const Searchbar = ({ onSubmit }) => {
+  const [value, setValue] = useState('');
 
-  handleChange = e => {
-    this.setState({ value: e.currentTarget.value });
-  };
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const searchValue = this.state.value.trim();
+    const searchValue = value.trim();
     if (!searchValue) {
       Notiflix.Notify.info('Please write some value');
     }
-    this.props.onSubmit(searchValue);
-    this.setState({ value: '' });
+    onSubmit(searchValue);
+    setValue('');
   };
-  render() {
-    return (
-      <header className={s.Searchbar}>
-        <form onSubmit={this.handleSubmit} className={s.SearchForm}>
-          <button type="submit" className={s.Button}>
-            <span className={s.ButtonLabel}>Search</span>
-          </button>
 
-          <input
-            className={s.Input}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.handleChange}
-            value={this.state.value}
-          />
-        </form>
-      </header>
-    );
-  }
-}
+  return (
+    <header className={s.Searchbar}>
+      <form onSubmit={handleSubmit} className={s.SearchForm}>
+        <button type="submit" className={s.Button}>
+          <span className={s.ButtonLabel}>Search</span>
+        </button>
+        <input
+          className={s.Input}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={e => setValue(e.target.value)}
+          value={value}
+        />
+      </form>
+    </header>
+  );
+};
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
